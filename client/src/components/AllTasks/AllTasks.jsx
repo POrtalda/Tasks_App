@@ -3,11 +3,12 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 
 
-export default function AllTasks({ token }) {
+export default function AllTasks({ token, onselectedTask }) {
 
     const [tasks, setTasks] = useState([]);
     // questo stato va a mappare il ruolo dell'utenete, se è admin o user, in modo da mostrare i tasks in base al ruolo
     const [role, setRole] = useState('');
+    
 
     useEffect(() => {
         fetch(`${VITE_API_URL}/tasks/me/`, {
@@ -44,7 +45,9 @@ export default function AllTasks({ token }) {
                 {/* qua dobbiamo mappare tutti i tasks */}
                 {tasks.map(t => (
                     <div key={t._id}>
-                        <p>{t.title} *** {t.completed_perc}%</p>
+                        <p onClick={() => onselectedTask(t._id)}>
+                            {t.title} *** {t.completed_perc}%
+                        </p>
                     </div>
                 ))}
 
