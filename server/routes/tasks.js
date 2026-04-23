@@ -65,7 +65,7 @@ taskskRouter.get('/:id', authMiddleware, async (req, res) => {
                 message: `id non valido: ${id}`
             });
         }
-        
+
         let task = await getDB().collection('tasks').findOne({ _id: new ObjectId(id) });
 
         // se l'utente è un user, deve vedere solo i tasks assegnati a lui , quindi quelli con assigned_to uguale al suo id
@@ -109,9 +109,6 @@ taskskRouter.post('/', authMiddleware, async (req, res) => {
         //newTask.user_id = req.user.id;   // inserisco l'id dell'utente che ha creato il libro, così poi posso fare i controlli di autorizzazione per update e delete
 
 
-        // #### SONO ARRIVATO QUI!!!!!!!!!!!!!!!!!!
-
-        
         // campi obligatori
         // TITLE E AUTHOR OBBLIGATORI, SE MANCANO RITORNA ERRORE 400
         if (!newBook.title || !newBook.author) {
@@ -150,8 +147,8 @@ taskskRouter.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// PUT /books/:id
-taskskRouter.put('/:id', authMiddleware, requireRole('admin'), async (req, res) => {
+// PUT /tasks/:id
+taskskRouter.put('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -161,31 +158,65 @@ taskskRouter.put('/:id', authMiddleware, requireRole('admin'), async (req, res) 
                 message: `id non valido: ${id}`
             });
         }
-        const book = req.body;                  // book da aggiornare, ma sono solo le proprietà che vogliamo aggiornare
+        const task = req.body;                 // task da aggiornare, ma sono solo le proprietà che vogliamo aggiornare
+
+        // devo recuparare il task attuale
+        let exsistingTask = await getDB().collection('tasks').findOne({ _id: new ObjectId(id) });
+        
+        if (!exsistingTask) {
+            return res.status(404).json({
+                success: false,
+                message: 'nessun task trovato con questo id',
+                data: null
+            });
+        }
+
+        // se sei di tipo user non puoi modificare task non assegnati a te
+        if (req.user.role === 'user' && exsistingTask.assigned_to !== req.user.id) {
+            return res.status(403)
+                .json({
+                    success: false,
+                    data: null,
+                    message: 'utente di tipo user no autorizzato  a modificare task altrui.'
+                });
+        }
+        // se di tipo user non deve poter aggiornare i campi:
+        // title, descriptions, expiration-date, assigned_to, expirationDate e assigned_to, 
+        // può aggiornare solo completed_perc e notes
+        if (req.user.role === 'user' && (task.title || task.descriptions || task.expirationDate || task.assigned_to)) {
+
+            return res.status(403)
+                .json({
+                    success: false,
+                    data: null,
+                    message: 'utente di tipo user no autorizzato alla modifica richiesta.'
+                });
+        }
+
 
         const result = await getDB()
-            .collection('books')
-            .updateOne(                             //  fai l'update di un ssolo record
-                { _id: new ObjectId(id) },            // il record da aggiornare è quello con _id = id   
-                { $set: book }                        // sovrascrivi i campi con i valori di book
+            .collection('tasks')
+            .updateOne(                      //  fai l'update di un solo record
+                { _id: new ObjectId(id) },   // il record da aggiornare è quello con _id = id   
+                { $set: task }               // sovrascrivi i campi con i valori di task
             );
         if (result.matchedCount === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'nessun libro trovato con questo id',
+                message: 'nessun task trovato con questo id',
                 data: null
             });
         }
         return res.status(200).json({
             success: true,
-            data: book,
-            message: 'libro aggiornato con successo'
+            data: task,
+            message: 'task aggiornato con successo'
         });
     } catch (error) {
-        console.error(`Errore durante il metodo PUT del libro: ${error}`);
+        console.error(`Errore durante il metodo PUT api/tasks/:id del task: ${error}`);
         return res.status(500).json({
             success: false,
-            message: `Errore durante il metodo PUT del libro: ${error}`,
+            message: `Errore durante il metodo PUT api/tasks/:id del task: ${error}`,
             error: error
         });
     }

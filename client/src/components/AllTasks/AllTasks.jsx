@@ -38,7 +38,7 @@ export default function AllTasks({ token, onselectedTask }) {
 
     return (
         <>
-            <div style={{ backgroundColor: 'dark-gray' }}>
+            <div style={{ backgroundColor: 'darkgray' }}>
                 <h2>
                     {role === 'admin' ? 'Tutti i Tasks' : 'I tuoi Tasks'}
                 </h2>

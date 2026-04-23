@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Button from '../Button/Button';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -8,42 +9,56 @@ export default function TaskDetails({ token, taskID }) {
   const [expirationDate, setExpirationDate] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
   const [completedPerc, setCompletedPerc] = useState(0);
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
-    if (!taskID) {
-      setTitle('');
-      setDescriptions('');
-      setExpirationDate('');
-      setAssignedTo('');
-      setCompletedPerc(0);
-      return;
-    }
-
-    fetch(`${VITE_API_URL}/tasks/${taskID}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    if (taskID) {
+      fetch(`${VITE_API_URL}/tasks/${taskID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => res.json())
       .then((data) => {
         const task = data.data;
-        console.log('Task:', task);
-
-        setTitle(task?.title ?? '');
-        setDescriptions(task?.descriptions ?? '');
-        setExpirationDate(task?.['expiration-date'] ?? '');
-        setAssignedTo(task?.assigned_to ?? '');
-        setCompletedPerc(task?.completed_perc ?? 0);
+        setTitle(task.title);
+        setDescriptions(task.descriptions);
+        setExpirationDate(task.expirationDate);
+        setAssignedTo(task.assigned_to);
+        setCompletedPerc(task.completed_perc);
+        setNotes(task.notes);
       })
-      .catch((err) => {
-        console.error('Errore nel recupero task:', err);
-        setTitle('');
-        setDescriptions('');
-        setExpirationDate('');
-        setAssignedTo('');
-        setCompletedPerc(0);
+    }
+
+  }, [taskID]);
+
+  function onEditTask() {
+    // ** SIAMO ARRIVATI QUI!!! **
+    // bisogna capire che tipo di utente sei
+    // se i admin metti tutti i campi
+    // se sei user metti solo completed_perc e notes
+
+    fetch(`${VITE_API_URL}/tasks/${taskID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        title: title,
+        descriptions: descriptions,
+        expirationDate: expirationDate,
+        assigned_to: assignedTo,
+        completed_perc: completedPerc,
+        notes: notes
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        location.reload();
       });
-  }, [taskID, token]);
+  }
 
   return (
     <div style={{ backgroundColor: 'gold' }}>
@@ -89,6 +104,17 @@ export default function TaskDetails({ token, taskID }) {
           value={completedPerc}
           onChange={(e) => setCompletedPerc(Number(e.target.value))}
         />
+
+        <label>Note Utente</label>
+        <input
+          style={{ width: '50%' }}
+          type="text"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+        
+        <Button taskID={taskID} onEditTask={onEditTask}/>
+
       </form>
     </div>
   );
