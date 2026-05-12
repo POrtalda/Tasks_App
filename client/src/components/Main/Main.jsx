@@ -9,7 +9,10 @@ export default function Main({ token }) {
   return (
     <>
       <AllTasks token = {token} onselectedTask={(id)=> setSelectedTaskId(id)}/>
-      <TaskDetails token = {token} taskID = {selectedTaskID}/>
+      
+      {selectedTaskID !== null && (
+        <TaskDetails token = {token} taskID = {selectedTaskID}/>
+      )}
     </>
   )
 }

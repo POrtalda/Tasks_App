@@ -10,6 +10,19 @@ export default function TaskDetails({ token, taskID }) {
   const [assignedTo, setAssignedTo] = useState('');
   const [completedPerc, setCompletedPerc] = useState(0);
   const [notes, setNotes] = useState('');
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    fetch(`${VITE_API_URL}/tasks/me/`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setRole(data.role);
+      });
+  }, []);
 
   useEffect(() => {
     if (taskID) {
@@ -18,25 +31,42 @@ export default function TaskDetails({ token, taskID }) {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => res.json())
-      .then((data) => {
-        const task = data.data;
-        setTitle(task.title);
-        setDescriptions(task.descriptions);
-        setExpirationDate(task.expirationDate);
-        setAssignedTo(task.assigned_to);
-        setCompletedPerc(task.completed_perc);
-        setNotes(task.notes);
-      })
+        .then((res) => res.json())
+        .then((data) => {
+          const task = data.data;
+          setTitle(task.title);
+          setDescriptions(task.descriptions);
+          setExpirationDate(task.expirationDate);
+          setAssignedTo(task.assigned_to);
+          setCompletedPerc(task.completed_perc ?? 0);
+          setNotes(task.notes);
+        })
     }
 
   }, [taskID]);
 
-  function onEditTask() {
+  function onEditTask(e) {
+    if (e) e.preventDefault();
     // ** SIAMO ARRIVATI QUI!!! **
     // bisogna capire che tipo di utente sei
     // se i admin metti tutti i campi
     // se sei user metti solo completed_perc e notes
+    let bodyRequestFields;
+    if (role === 'admin') {
+      bodyRequestFields = {
+        title: title,
+        descriptions: descriptions,
+        expirationDate: expirationDate,
+        assigned_to: assignedTo,
+        completed_perc: completedPerc,
+        notes: notes
+      }
+    } else {
+      bodyRequestFields = {
+        completed_perc: completedPerc,
+        notes: notes
+      }
+    }
 
     fetch(`${VITE_API_URL}/tasks/${taskID}`, {
       method: 'PUT',
@@ -44,14 +74,7 @@ export default function TaskDetails({ token, taskID }) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({
-        title: title,
-        descriptions: descriptions,
-        expirationDate: expirationDate,
-        assigned_to: assignedTo,
-        completed_perc: completedPerc,
-        notes: notes
-      })
+      body: JSON.stringify(bodyRequestFields)
     })
       .then(res => res.json())
       .then(data => {
@@ -63,10 +86,19 @@ export default function TaskDetails({ token, taskID }) {
   return (
     <div style={{ backgroundColor: 'gold' }}>
       <h2>Dettagli Task</h2>
+      {/* **questo blocco in base al ruolo mostra qualcosa **
+      {/* {role === 'admin' ? (
+        <p>Sei un admin, puoi modificare tutti i campi</p>
+      ) : (
+        <p>Sei un user, puoi modificare solo completato e note</p>
+      )} */}
 
-      <form style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <form
+        onsubmit={onEditTask}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <label>Titolo:</label>
         <input
+          disabled={role === 'admin' ? false : true} // se sei admin puoi modificare il titolo, altrimenti no
           style={{ width: '50%' }}
           type="text"
           value={title}
@@ -75,6 +107,7 @@ export default function TaskDetails({ token, taskID }) {
 
         <label>Descrizione:</label>
         <input
+          disabled={role === 'admin' ? false : true} // se sei admin puoi modificare la descrizione, altrimenti no
           style={{ width: '50%' }}
           type="text"
           value={descriptions}
@@ -83,6 +116,7 @@ export default function TaskDetails({ token, taskID }) {
 
         <label>Scadenza:</label>
         <input
+          disabled={role === 'admin' ? false : true} // se sei admin puoi modificare la scadenza, altrimenti no
           style={{ width: '50%' }}
           type="date"
           value={expirationDate}
@@ -91,6 +125,7 @@ export default function TaskDetails({ token, taskID }) {
 
         <label>Assegnato a:</label>
         <input
+          disabled={role === 'admin' ? false : true} // se sei admin puoi modificare l'assegnato a, altrimenti no
           style={{ width: '50%' }}
           type="text"
           value={assignedTo}
@@ -102,8 +137,12 @@ export default function TaskDetails({ token, taskID }) {
           style={{ width: '50%' }}
           type="number"
           value={completedPerc}
+          min={0}
+          max={100}
+          step={1}
           onChange={(e) => setCompletedPerc(Number(e.target.value))}
         />
+        <span>%</span>
 
         <label>Note Utente</label>
         <input
@@ -112,8 +151,8 @@ export default function TaskDetails({ token, taskID }) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />
-        
-        <Button taskID={taskID} onEditTask={onEditTask}/>
+
+        <Button taskID={taskID} onEditTask={onEditTask} />
 
       </form>
     </div>
