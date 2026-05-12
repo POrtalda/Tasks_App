@@ -18,16 +18,16 @@ export default function TaskDetails({ token, taskID }) {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => res.json())
-      .then((data) => {
-        const task = data.data;
-        setTitle(task.title);
-        setDescriptions(task.descriptions);
-        setExpirationDate(task.expirationDate);
-        setAssignedTo(task.assigned_to);
-        setCompletedPerc(task.completed_perc);
-        setNotes(task.notes);
-      })
+        .then((res) => res.json())
+        .then((data) => {
+          const task = data.data;
+          setTitle(task.title);
+          setDescriptions(task.descriptions);
+          setExpirationDate(task.expirationDate);
+          setAssignedTo(task.assigned_to);
+          setCompletedPerc(task.completed_perc);
+          setNotes(task.notes);
+        })
     }
 
   }, [taskID]);
@@ -112,8 +112,10 @@ export default function TaskDetails({ token, taskID }) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />
-        
-        <Button taskID={taskID} onEditTask={onEditTask}/>
+        <input type='number' />
+
+
+        <Button taskID={taskID} onEditTask={onEditTask} />
 
       </form>
     </div>
