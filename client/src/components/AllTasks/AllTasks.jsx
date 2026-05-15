@@ -45,7 +45,8 @@ export default function AllTasks({ token, onselectedTask }) {
                 {/* qua dobbiamo mappare tutti i tasks */}
                 {tasks.map(t => (
                     <div key={t._id}>
-                        <p onClick={() => onselectedTask(t._id)}>
+                        <p style={{backgroundColor: t.completed_perc === 100 ? 'green' : t.completed_perc === 0 ? 'white' : 'yellow'}}
+                            onClick={() => onselectedTask(t._id)}>
                             {t.title} *** {t.completed_perc}%
                         </p>
                     </div>

@@ -83,6 +83,22 @@ export default function TaskDetails({ token, taskID }) {
       });
   }
 
+  function onDeleteTask() {
+
+    fetch(`${VITE_API_URL}/tasks/${taskID}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        location.reload();
+      });
+  }
+
+
   return (
     <div style={{ backgroundColor: 'gold' }}>
       <h2>Dettagli Task</h2>
@@ -139,7 +155,7 @@ export default function TaskDetails({ token, taskID }) {
           value={completedPerc}
           min={0}
           max={100}
-          step={1}
+          step={10}
           onChange={(e) => setCompletedPerc(Number(e.target.value))}
         />
         <span>%</span>
@@ -151,10 +167,14 @@ export default function TaskDetails({ token, taskID }) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />
-        <input type='number' />
+
+        <Button taskID={taskID} onClickButton={onEditTask} text="Modifica" />
+        {role === 'admin' && (
+          <Button taskID={taskID} onClickButton={onDeleteTask} text="Elimina" />
+
+        )}
 
 
-        <Button taskID={taskID} onEditTask={onEditTask} />
 
       </form>
     </div>

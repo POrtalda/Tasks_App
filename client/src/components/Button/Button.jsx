@@ -1,12 +1,12 @@
-export default function Button({ taskID, onEditTask }) {
+export default function Button({ taskID, onClickButton, text }) {
 
     function handleClick() {
-        onEditTask();
+        onClickButton();
     }
 
   return (
     <>
-      <button onClick={handleClick}>Modifica</button>
+      <button onClick={handleClick}>{text}</button>
     </>
   )
 }

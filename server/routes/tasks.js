@@ -222,7 +222,7 @@ taskskRouter.put('/:id', authMiddleware, async (req, res) => {
     }
 })
 
-// DELETE /books/:id
+// DELETE /tasks/:id
 taskskRouter.delete('/:id', authMiddleware, requireRole('admin'), async (req, res) => {
     try {
         const { id } = req.params;
@@ -233,25 +233,38 @@ taskskRouter.delete('/:id', authMiddleware, requireRole('admin'), async (req, re
                 message: `id non valido: ${id}`
             });
         }
+
+        // recuper o dal db il task con l'id richiesto
+        let task = await getDB().collection('tasks').findOne({ _id: new ObjectId(id) });
+        // controllare se quel task è completo al 100%
+        if (task && task.completed_perc < 100) {
+            return res.status(400).json({
+                success: false,
+                data: null,
+                message: 'non è possibile cancellare un task non completato al 100%'
+            });
+        }
+
+        // se si cancelliamolo 
         const result = await getDB()
-            .collection('books')
+            .collection('tasks')
             .deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'nessun libro trovato con questo id',
+                message: 'nessun task trovato con questo id',
                 data: null
             });
         }
         return res.status(200).json({
             success: true,
-            message: 'libro eliminato con successo'
+            message: 'task eliminato con successo'
         });
     } catch (error) {
-        console.error(`Errore durante il metodo DELETE del libro: ${error}`);
+        console.error(`Errore durante il metodo DELETE del task: ${error}`);
         return res.status(500).json({
             success: false,
-            message: `Errore durante il metodo DELETE del libro: ${error}`,
+            message: `Errore durante il metodo DELETE del task: ${error}`,
             error: error
         });
     }
