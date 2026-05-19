@@ -169,7 +169,7 @@ export default function TaskDetails({ token, taskID }) {
         />
 
         <Button taskID={taskID} onClickButton={onEditTask} text="Modifica" />
-        {role === 'admin' && (
+        {role === 'admin' && completedPerc === 100 && (
           <Button taskID={taskID} onClickButton={onDeleteTask} text="Elimina" />
 
         )}

@@ -100,48 +100,39 @@ taskskRouter.get('/:id', authMiddleware, async (req, res) => {
 });
 
 // POST /tasks
-taskskRouter.post('/', authMiddleware, async (req, res) => {
+// possono creare un task solo gli admin, quindi aggiungo il middleware requireRole che verifica che l'utente abbia il ruolo admin
+taskskRouter.post('/', authMiddleware, requireRole('admin'), async (req, res) => {
     try {
         const newTask = req.body;         // leggo i dati del task da creare dal body della richiesta
 
         console.log('req.user.id: ', req.user.id);  // stampo req.user per vedere che c'è l'utente autenticato
-
-        //newTask.user_id = req.user.id;   // inserisco l'id dell'utente che ha creato il libro, così poi posso fare i controlli di autorizzazione per update e delete
-
-
+       
         // campi obligatori
-        // TITLE E AUTHOR OBBLIGATORI, SE MANCANO RITORNA ERRORE 400
-        if (!newBook.title || !newBook.author) {
+        // TITOLO SE MANCA RITORNA ERRORE 400
+        if (!newTask.title) {
             return res.status(400).json({
                 success: false,
-                message: 'title e author sono campi obbligatori'
+                message: 'titolo è un campo obbligatorio',
+                data: null
             });
-        }
-
-        // controlla che non ci siano campi non consentiti, se ci sono ritorna errore 400
-        for (let key in newBook) {
-            if (!['title', 'author', 'is_available', 'user_id'].includes(key)) {
-                return res.status(400).json({
-                    success: false,
-                    message: `il libro non può avere il campo ${key}, i campi consentiti sono: title, author, is_available e user_id`
-                });
-            }
-        }
+        }        
 
         const result = await getDB()
-            .collection('books')
-            .insertOne(newBook);
+            .collection('tasks')
+            .insertOne(newTask);   // inserisco il nuovo task nel db
+
+        // const newTaskDoc = await getDB().collection('tasks').findOne({ _id: result.insertedId }); // recupero il task appena inserito per restituirlo nella risposta
 
         res.status(201).json({
             success: true,
-            data: newBook,
-            message: 'nuovo libro aggiunto con successo'
+            data: newTask,
+            message: 'nuovo task aggiunto con successo'
         });
     } catch (error) {
-        console.error(`Errore durante il metodo POST del libro: ${error}`);
+        console.error(`Errore durante il metodo POST del task: ${error}`);
         return res.status(500).json({
             success: false,
-            message: `Errore durante il metodo POST del libro: ${error}`,
+            message: `Errore durante il metodo POST del task: ${error}`,
             error: error
         });
     }
@@ -171,6 +162,13 @@ taskskRouter.put('/:id', authMiddleware, async (req, res) => {
             });
         }
 
+        if (task.completed_perc <  0 || task.completed_perc > 100) {
+            return res.status(400).json({
+                success: false,
+                message: 'la percentuale deve essere un valore tra 0 e 100',
+                data: null
+            });
+        }
         // se sei di tipo user non puoi modificare task non assegnati a te
         if (req.user.role === 'user' && exsistingTask.assigned_to !== req.user.id) {
             return res.status(403)
