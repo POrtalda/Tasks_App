@@ -1,13 +1,20 @@
-import React from 'react'
+import './NavBar.css';
 
 export default function NavBar() {
   return (
     <>
-    
-      <div>
-        <h1>Task-App</h1>
-        <h2>Gestisci i tuoi task nel tuo team di lavoro</h2>
-      </div>
+
+      <header>
+        <div className='logo-title'>
+          <span className="material-symbols-outlined">
+            check_box
+          </span>
+          <h1>TASK-APP</h1>
+        </div>
+        <div className='sub-title'>
+          <h2 ><i>Gestisci i tuoi task nel tuo team di lavoro</i></h2>
+        </div>
+      </header>
     </>
   )
 }

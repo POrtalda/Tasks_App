@@ -1,6 +1,6 @@
 import { useState } from "react";
-
-const VITE_API_URL =import.meta.env.VITE_API_URL
+import './Login.css'
+const VITE_API_URL = import.meta.env.VITE_API_URL
 
 export default function Login({ onLogin }) {
 
@@ -31,16 +31,23 @@ export default function Login({ onLogin }) {
 
     return (
         <>
-            <h3>login</h3>
-            <form onSubmit={handleLogin}>
-                <label>email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <br />
-                <label>password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <br />
-                <button type="submit">accedi</button>
-            </form>
+            <div className="form-container">
+                <form onSubmit={handleLogin} className="form-login">
+                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <button type="submit">
+                        <span>
+                            Login
+                        </span>
+                        <span class="material-symbols-outlined">
+                            login
+                        </span>
+                    </button>
+                </form>
+            </div>
+
+
+
         </>
     )
 }

@@ -1,0 +1,42 @@
+header {
+    background-color: #9bfca0;
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  /*con direction row allinea orizzontalmente*/    
+    align-items: center;  /*align-items allinea verticalmente*/
+    padding-left: 50px;
+    padding-right: 120px;
+    flex-wrap: wrap; 
+}
+header .logo-title {    
+    display: flex;
+    flex-direction: row;
+    align-items: center;    
+    column-gap: 30px;
+    width: 400px;    
+}
+
+header .sub-title {    
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+       
+    
+}
+
+header span {
+    font-size: 55px !important;    
+}
+
+header h1 {
+    color: white;
+    
+}
+
+header h2 {
+    font-weight: lighter;
+    color: rgb(100, 99, 99);
+    
+}
