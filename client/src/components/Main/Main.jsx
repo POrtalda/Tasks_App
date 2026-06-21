@@ -1,3 +1,4 @@
+import './Main.css';
 import { useEffect, useState } from "react";
 import AllTasks from "../AllTasks/AllTasks";
 import TaskDetails from "../TaskDetails/TaskDetails";
@@ -8,7 +9,7 @@ export default function Main({ token }) {
 
   const [selectedTaskID, setSelectedTaskId] = useState(null);
   const [role, setRole] = useState('');
-  
+
 
   useEffect(() => {
     fetch(`${VITE_API_URL}/tasks/me/`, {
@@ -24,18 +25,20 @@ export default function Main({ token }) {
 
   return (
     <>
-      <AllTasks token={token} onselectedTask={(id) => setSelectedTaskId(id)} />
-      {role === 'admin' && selectedTaskID !== null && (
-        <button onClick={() => setSelectedTaskId(null)}>Crea Nuovo Task</button>
-      )}
-      {selectedTaskID !== null ? (
-        <TaskDetails token={token} taskID={selectedTaskID} />
-      ) : (
-        role === 'admin' && (
-          <NewTask token={token} taskID={selectedTaskID} />
-        )
-      )}
+      <div className="main-section">
 
+        <AllTasks token={token} onselectedTask={(id) => setSelectedTaskId(id)} />
+        {role === 'admin' && selectedTaskID !== null && (
+          <button onClick={() => setSelectedTaskId(null)}>Crea Nuovo Task</button>
+        )}
+        {selectedTaskID !== null ? (
+          <TaskDetails token={token} taskID={selectedTaskID} />
+        ) : (
+          role === 'admin' && (
+            <NewTask token={token} taskID={selectedTaskID} />
+          )
+        )}
+      </div>
     </>
   )
 }

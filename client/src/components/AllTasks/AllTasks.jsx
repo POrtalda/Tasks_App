@@ -1,3 +1,4 @@
+import './AllTasks.css';
 import React, { useEffect, useState } from 'react'
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -8,7 +9,7 @@ export default function AllTasks({ token, onselectedTask }) {
     const [tasks, setTasks] = useState([]);
     // questo stato va a mappare il ruolo dell'utenete, se è admin o user, in modo da mostrare i tasks in base al ruolo
     const [role, setRole] = useState('');
-    
+
 
     useEffect(() => {
         fetch(`${VITE_API_URL}/tasks/me/`, {
@@ -38,15 +39,15 @@ export default function AllTasks({ token, onselectedTask }) {
 
     return (
         <>
-            <div style={{ backgroundColor: 'darkgray' }}>
+            <div className='card-all-tasks'>
                 <h2>
                     {role === 'admin' ? 'Tutti i Tasks' : 'I tuoi Tasks'}
                 </h2>
                 {/* qua dobbiamo mappare tutti i tasks */}
                 {tasks.map(t => (
-                    <div key={t._id}>
-                        <p style={{backgroundColor: t.completed_perc === 100 ? 'green' : t.completed_perc === 0 ? 'white' : 'yellow'}}
-                            onClick={() => onselectedTask(t._id)}>
+                    <div key={t._id} className='card-preview-task'
+                        style={{ backgroundColor: t.completed_perc === 100 ? '#DEEFD8' : t.completed_perc === 0 ? 'white' : '#FBDA06' }}>
+                        <p onClick={() => onselectedTask(t._id)}>
                             {t.title} *** {t.completed_perc}%
                         </p>
                     </div>

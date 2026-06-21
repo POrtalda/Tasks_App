@@ -1,0 +1,20 @@
+.card-all-tasks{
+    background-color: #D3D3D3;
+    width: 600px;;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+}
+
+.card-all-tasks h2{
+    margin-top: 20px;
+}
+
+.card-preview-task {
+    height: 40px;
+    width: 90%;
+    border-radius: 10px;
+    
+}
