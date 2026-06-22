@@ -1,4 +1,17 @@
 .main-section {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 20px;
+}
+.btn-new-task {
+    border-radius: 15px;
+    width: 50px;
+    height: 30px;
+    margin-left: 50px;
+    background-color: #94CDFF;
+}
+
+.btn-new-task:hover {
+    background-color: #6AB0FF;
 }

@@ -1,3 +1,4 @@
+import './TaskDetails.css';
 import { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 
@@ -100,7 +101,7 @@ export default function TaskDetails({ token, taskID }) {
 
 
   return (
-    <div style={{ backgroundColor: 'gold' }}>
+    <div className='card-details-tasks'>
       <h2>Dettagli Task</h2>
       {/* **questo blocco in base al ruolo mostra qualcosa **
       {/* {role === 'admin' ? (
@@ -109,7 +110,7 @@ export default function TaskDetails({ token, taskID }) {
         <p>Sei un user, puoi modificare solo completato e note</p>
       )} */}
 
-      <form
+      <form className='form-detail-task'
         onsubmit={onEditTask}
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <label>Titolo:</label>

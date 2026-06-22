@@ -6,6 +6,7 @@
     flex-direction: column;
     row-gap: 15px;
     align-items: center;
+    padding-bottom: 20px;
 }
 
 .card-all-tasks h2{
@@ -16,5 +17,25 @@
     height: 40px;
     width: 90%;
     border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.card-preview-task p {
+    margin-left: 15px;
     
+}
+
+.percentage-btn {
+    border-radius: 15px;
+    border: 2px solid black;
+    height: 22px;
+    width: 50px;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }

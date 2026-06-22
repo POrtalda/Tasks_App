@@ -1,3 +1,5 @@
+import './Button.css';
+
 export default function Button({ taskID, onClickButton, text }) {
 
     function handleClick() {
@@ -6,7 +8,7 @@ export default function Button({ taskID, onClickButton, text }) {
 
   return (
     <>
-      <button onClick={handleClick}>{text}</button>
+      <button className="btn-edit-delete" onClick={handleClick}>{text}</button>
     </>
   )
 }

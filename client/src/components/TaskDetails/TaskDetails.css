@@ -1,0 +1,32 @@
+.card-details-tasks{
+    background-color: #FBDA06;
+    width: 600px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+}
+
+.card-details-tasks h2{
+    margin-top: 10px;
+}
+
+.form-detail-task {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.form-detail-task label {
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+.form-detail-task input {
+    height: 30px;
+    border-radius: 15px;
+    border: none;
+    padding-left: 15px;
+    padding-right: 15px;
+}

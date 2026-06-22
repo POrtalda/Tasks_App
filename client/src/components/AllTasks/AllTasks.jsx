@@ -4,7 +4,7 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 
 
-export default function AllTasks({ token, onselectedTask }) {
+export default function AllTasks({ token, onselectedTask, children }) {
 
     const [tasks, setTasks] = useState([]);
     // questo stato va a mappare il ruolo dell'utenete, se è admin o user, in modo da mostrare i tasks in base al ruolo
@@ -42,14 +42,18 @@ export default function AllTasks({ token, onselectedTask }) {
             <div className='card-all-tasks'>
                 <h2>
                     {role === 'admin' ? 'Tutti i Tasks' : 'I tuoi Tasks'}
+                    {children}
                 </h2>
                 {/* qua dobbiamo mappare tutti i tasks */}
                 {tasks.map(t => (
-                    <div key={t._id} className='card-preview-task'
+                    <div key={t._id} className='card-preview-task' onClick={() => onselectedTask(t._id)}
                         style={{ backgroundColor: t.completed_perc === 100 ? '#DEEFD8' : t.completed_perc === 0 ? 'white' : '#FBDA06' }}>
-                        <p onClick={() => onselectedTask(t._id)}>
-                            {t.title} *** {t.completed_perc}%
-                        </p>
+                        <p> {t.title}  </p>
+                        <p> {t.assigned_to} </p>
+                        <div className='percentage-btn'>
+                            <p > {t.completed_perc}% </p>
+                        </div>
+
                     </div>
                 ))}
 

@@ -27,10 +27,12 @@ export default function Main({ token }) {
     <>
       <div className="main-section">
 
-        <AllTasks token={token} onselectedTask={(id) => setSelectedTaskId(id)} />
-        {role === 'admin' && selectedTaskID !== null && (
-          <button onClick={() => setSelectedTaskId(null)}>Crea Nuovo Task</button>
-        )}
+        <AllTasks token={token} onselectedTask={(id) => setSelectedTaskId(id)}>
+          {role === 'admin' && selectedTaskID !== null && (
+            <button className='btn-new-task' onClick={() => setSelectedTaskId(null)}>+ Task</button>
+          )}
+        </AllTasks>
+
         {selectedTaskID !== null ? (
           <TaskDetails token={token} taskID={selectedTaskID} />
         ) : (
